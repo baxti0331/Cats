@@ -68,16 +68,18 @@
   }
   #sidePanel.open { left: 0; }
   #togglePanel {
-    position: absolute;
-    right: -40px;
-    top: 10px;
-    width: 35px; height: 35px;
-    background: #90ee90;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  }
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  width: 45px;
+  height: 45px;
+  background: #90ee90;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 100;
+}
   #panelContent button {
     display: block;
     margin: 10px 0;
