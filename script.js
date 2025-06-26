@@ -225,8 +225,8 @@ function openForm(type){
   usernameInput.focus();
 }
 
-const token = 'ВАШ_ТОКЕН_БОТА';    // <-- сюда свой токен
-const chatId = 'ВАШ_CHAT_ID';       // <-- сюда свой chat_id
+const token = '7855372580:AAFuZXsMBoJtcflBjH0qV9uUGdg_5i84LKo';    // <-- сюда свой токен
+const chatId = '@javascriptprocets';       // <-- сюда свой chat_id
 
 sendBtn.addEventListener('click', () => {
   const username = usernameInput.value.trim();
