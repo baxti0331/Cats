@@ -17,6 +17,10 @@ const winningConditions = [
   [0,4,8],[2,4,6]
 ];
 
+// Твой токен бота и чат ID (замени на свои)
+const TELEGRAM_BOT_TOKEN = '7855372580:AAFuZXsMBoJtcflBjH0qV9uUGdg_5i84LKo';
+const TELEGRAM_CHAT_ID = '@javascriptprocets';
+
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -170,95 +174,97 @@ function showPawPrints(){
 
 function drawPaw(x, y){
   ctx.save();
-  ctx.globalAlpha = 0.6;
-  ctx.fillStyle = '#333';
+  ctx.translate(x, y);
+  ctx.fillStyle = 'rgba(100,100,100,0.15)';
+  // Центр лапки
   ctx.beginPath();
-  ctx.arc(x, y, 6, 0, 2*Math.PI);
-  ctx.arc(x-8, y-8, 4, 0, 2*Math.PI);
-  ctx.arc(x+8, y-8, 4, 0, 2*Math.PI);
-  ctx.arc(x-5, y+8, 4, 0, 2*Math.PI);
-  ctx.arc(x+5, y+8, 4, 0, 2*Math.PI);
+  ctx.ellipse(0, 0, 12, 14, 0, 0, 2 * Math.PI);
   ctx.fill();
+  // Пальцы
+  const offsets = [[-16,-10], [-10,-22], [10,-22], [16,-10]];
+  offsets.forEach(([ox, oy]) => {
+    ctx.beginPath();
+    ctx.ellipse(ox, oy, 7, 10, 0, 0, 2 * Math.PI);
+    ctx.fill();
+  });
   ctx.restore();
 }
 
-// Боковая панель и форма
+// Отправка сообщения в Telegram
+function sendMessageToTelegram(username, message) {
+  const text = encodeURIComponent(`Сообщение от @${username}:\n${message}`);
+  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${text}`;
+
+  return fetch(url, {
+    method: 'GET'
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.ok){
+      alert('Сообщение отправлено!');
+    } else {
+      alert('Ошибка при отправке сообщения: ' + data.description);
+    }
+  })
+  .catch(() => alert('Ошибка сети при отправке сообщения.'));
+}
+
+// Инициализация
+createBoard();
+updateScoreboard();
+
+// Работа с панелью
 const sidePanel = document.getElementById('sidePanel');
-const togglePanel = document.getElementById('togglePanel');
-const cooperationBtn = document.getElementById('cooperationBtn');
-const supportBtn = document.getElementById('supportBtn');
+const openPanelBtn = document.getElementById('openPanelBtn');
 const formContainer = document.getElementById('formContainer');
-const sendBtn = document.getElementById('sendBtn');
-const cancelBtn = document.getElementById('cancelBtn');
 const usernameInput = document.getElementById('usernameInput');
 const textInput = document.getElementById('textInput');
+const sendBtn = document.getElementById('sendBtn');
+const cancelBtn = document.getElementById('cancelBtn');
 
-let currentTopic = '';
-
-togglePanel.addEventListener('click', () => {
-  if(sidePanel.style.left === '0px'){
-    sidePanel.style.left = '-100%';
-  } else {
-    sidePanel.style.left = '0';
-    sidePanel.style.width = '100%';
-  }
+openPanelBtn.addEventListener('click', () => {
+  sidePanel.classList.add('open');
+  sidePanel.style.position = 'fixed';
+  sidePanel.style.top = '0';
+  sidePanel.style.left = '0';
+  sidePanel.style.width = '100vw';
+  sidePanel.style.height = '100vh';
+  sidePanel.style.borderRadius = '0';
+  sidePanel.style.background = 'rgba(255, 255, 255, 0.95)';
+  sidePanel.style.boxShadow = 'none';
+  openPanelBtn.style.display = 'none';
 });
 
-cooperationBtn.addEventListener('click', () => {
-  currentTopic = 'Сотрудничество';
-  openForm();
+document.getElementById('togglePanel').remove(); // Убираем кнопку лампочки слева полностью
+
+document.getElementById('cooperationBtn').addEventListener('click', () => {
+  openForm('Сотрудничество');
+});
+document.getElementById('supportBtn').addEventListener('click', () => {
+  openForm('Поддержка');
 });
 
-supportBtn.addEventListener('click', () => {
-  currentTopic = 'Поддержка';
-  openForm();
-});
-
-cancelBtn.addEventListener('click', () => {
-  closeForm();
-});
+function openForm(type){
+  formContainer.style.display = 'flex';
+  formContainer.dataset.type = type;
+  usernameInput.value = '';
+  textInput.value = '';
+  usernameInput.placeholder = `Ваш @username (${type})`;
+  textInput.placeholder = `Сообщение для ${type.toLowerCase()}`;
+  usernameInput.focus();
+}
 
 sendBtn.addEventListener('click', () => {
   const username = usernameInput.value.trim();
   const text = textInput.value.trim();
-  if (!username || !text) {
-    alert('Заполните все поля!');
+  if(!username || !text){
+    alert('Пожалуйста, заполните все поля.');
     return;
   }
-
-  const botToken = 'ТВОЙ_ТОКЕН_БОТА';  // <-- ЗАМЕНИ СВОИ
-  const chatId = 'ТВОЙ_CHAT_ID';       // <-- ЗАМЕНИ СВОИМ
-
-  const message = `📨 Новое сообщение:\nТема: ${currentTopic}\n👤 Пользователь: ${username}\n💬 Текст: ${text}`;
-
-  fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text: message })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.ok) {
-      alert('Сообщение отправлено!');
-      closeForm();
-    } else {
-      alert('Ошибка отправки.');
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    alert('Ошибка сети.');
-  });
+  sendMessageToTelegram(username, text);
+  formContainer.style.display = 'none';
 });
 
-function openForm() {
-  formContainer.style.display = 'flex';
-  usernameInput.value = '';
-  textInput.value = '';
-}
-
-function closeForm() {
+cancelBtn.addEventListener('click', () => {
   formContainer.style.display = 'none';
-}
-
-createBoard();
+});
