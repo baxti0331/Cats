@@ -58,7 +58,7 @@
     pointer-events: none; z-index: 10;
   }
 
-  /* Панель на весь экран */
+  /* Панель */
   #sidePanel {
     position: fixed;
     top: 0;
@@ -66,22 +66,21 @@
     width: 100vw;
     height: 100vh;
     background: rgba(255,255,255,0.95);
-    box-shadow: inset 0 0 30px rgba(0,0,0,0.2);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 20px;
+    z-index: 20;
     display: none;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 40px 20px;
-    z-index: 20;
+    justify-content: center;
   }
-  #sidePanel.open {
-    display: flex;
-  }
+  #sidePanel.open { display: flex; }
 
-  /* Кнопки панели */
+  /* Новые стили для кнопок панели */
   #panelContent button {
     display: block;
-    margin: 20px 0;
+    margin: 12px 0;
     width: 200px;
     padding: 15px 0;
     font-size: 20px;
@@ -89,8 +88,8 @@
     color: #fff;
     background: linear-gradient(135deg, #56ab2f, #a8e063);
     border: none;
-    border-radius: 30px;
-    box-shadow: 0 8px 16px rgba(86,171,47,0.7);
+    border-radius: 25px;
+    box-shadow: 0 6px 12px rgba(86,171,47,0.6);
     cursor: pointer;
     transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
     user-select: none;
@@ -98,85 +97,47 @@
   }
   #panelContent button:hover {
     background: linear-gradient(135deg, #a8e063, #56ab2f);
-    box-shadow: 0 10px 26px rgba(168,224,99,0.9);
-    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(168,224,99,0.8);
+    transform: translateY(-3px);
   }
   #panelContent button:active {
     background: #3c7d1e;
-    box-shadow: 0 6px 14px rgba(60,125,30,0.9);
+    box-shadow: 0 4px 10px rgba(60,125,30,0.8);
     transform: translateY(1px);
-  }
-  #closePanelBtn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 28px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: #444;
-    user-select: none;
-  }
-  #closePanelBtn:hover {
-    color: #222;
   }
 
   /* Форма */
   #formContainer {
-    margin-top: 30px;
-    display: flex;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 30;
+    display: none;
     flex-direction: column;
     align-items: center;
-    width: 320px;
   }
   #formContainer input,
   #formContainer textarea {
-    margin: 8px 0;
-    width: 100%;
-    padding: 10px;
+    margin: 5px 0;
+    width: 220px;
+    padding: 8px;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    resize: none;
+    border-radius: 5px;
   }
-  #formContainer textarea {
-    height: 100px;
-  }
-  #formButtons {
-    margin-top: 10px;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-  #formButtons button {
-    flex: 1;
-    margin: 0 5px;
-    padding: 12px 0;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    user-select: none;
-    font-weight: 600;
-  }
-  #sendBtn {
+  #formContainer button {
+    margin: 5px;
+    padding: 8px 20px;
     background: #90ee90;
-    color: #222;
-    box-shadow: 0 5px 10px rgba(144,238,144,0.7);
-    transition: background 0.3s ease;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
   }
-  #sendBtn:hover {
-    background: #66dd66;
-  }
-  #cancelBtn {
-    background: #ee9090;
-    color: #222;
-    box-shadow: 0 5px 10px rgba(238,144,144,0.7);
-    transition: background 0.3s ease;
-  }
-  #cancelBtn:hover {
-    background: #dd6666;
-  }
+  #formContainer button:hover { background: #66dd66; }
 
   /* Кнопка внизу по центру */
   #openPanelBtn {
@@ -187,8 +148,8 @@
     background: #90ee90;
     border: none;
     border-radius: 25px;
-    padding: 12px 40px;
-    font-size: 20px;
+    padding: 12px 30px;
+    font-size: 18px;
     font-weight: 700;
     box-shadow: 0 6px 12px rgba(144,238,144,0.7);
     cursor: pointer;
@@ -218,25 +179,22 @@
 
 <!-- Панель -->
 <div id="sidePanel">
-  <button id="closePanelBtn" title="Закрыть меню">✖</button>
   <div id="panelContent">
     <button id="cooperationBtn">🤝 Сотрудничество</button>
     <button id="supportBtn">💖 Поддержка</button>
-  </div>
-
-  <!-- Форма -->
-  <div id="formContainer" style="display:none;">
-    <input id="usernameInput" placeholder="Ваш @username" />
-    <textarea id="textInput" placeholder="Ваше сообщение"></textarea>
-    <div id="formButtons">
-      <button id="sendBtn">Отправить</button>
-      <button id="cancelBtn">Отмена</button>
-    </div>
   </div>
 </div>
 
 <!-- Кнопка открытия панели внизу -->
 <button id="openPanelBtn">💡 Меню</button>
+
+<!-- Форма -->
+<div id="formContainer">
+  <input id="usernameInput" placeholder="Ваш @username" />
+  <textarea id="textInput" placeholder="Ваше сообщение"></textarea>
+  <button id="sendBtn">Отправить</button>
+  <button id="cancelBtn">Отмена</button>
+</div>
 
 <script src="script.js"></script>
 
