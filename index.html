@@ -184,20 +184,30 @@ function restartGame() {
 
 function botMove() {
   if (!gameActive) return;
-  let bestScore = -Infinity;
-  let move;
-  for(let i=0; i<board.length; i++){
-    if(board[i] === ''){
-      board[i] = '🐶';
-      let score = minimax(board, 0, false);
-      board[i] = '';
-      if(score > bestScore){
-        bestScore = score;
-        move = i;
+
+  const chance = Math.random();
+  
+  if (chance < 0.85) {
+    let bestScore = -Infinity;
+    let move;
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === '') {
+        board[i] = '🐶';
+        let score = minimax(board, 0, false);
+        board[i] = '';
+        if (score > bestScore) {
+          bestScore = score;
+          move = i;
+        }
       }
     }
+    board[move] = '🐶';
+  } else {
+    const available = board.map((v, i) => v === '' ? i : null).filter(v => v !== null);
+    const move = available[Math.floor(Math.random() * available.length)];
+    board[move] = '🐶';
   }
-  board[move] = '🐶';
+
   updateBoard();
   checkResult();
 }
